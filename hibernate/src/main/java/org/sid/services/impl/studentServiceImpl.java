@@ -1,4 +1,4 @@
-package org.sid.services;
+package org.sid.services.impl;
 
 import java.util.List;
 
@@ -8,14 +8,24 @@ import javax.persistence.Query;
 
 import org.sid.entities.Student;
 import org.sid.repository.StudentRepository;
+import org.sid.services.StudentService;
+import org.sid.services.common.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 
+ * @author Razine Anass
+ *
+ */
 @Service
 @Transactional
-public class studentServiceImpl implements studentService{
+public class studentServiceImpl extends AbstractService<Student> implements StudentService{
 	
 	 @PersistenceContext
 	 EntityManager entityManager;
@@ -62,4 +72,28 @@ public class studentServiceImpl implements studentService{
 		
 		return studentUdated;
 	}
+
+//	@Override
+//	public List<Student> findAll() {
+//		
+//		List<Student> students = studentRepository.findAll();
+//		
+//		return students;
+//	}
+	
+	
+	/*---------------------------------------------------------------*/
+
+	@Override
+    protected PagingAndSortingRepository<Student, Long> getDao() {
+        return studentRepository;
+    }
+
+    // custom methods
+
+    @Override
+    public Page<Student> findPaginated(Pageable pageable) {
+        return studentRepository.findAll(pageable);
+    }
+	
 }

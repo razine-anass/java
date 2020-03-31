@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Student implements Serializable {
 	
@@ -21,6 +23,7 @@ public class Student implements Serializable {
 	private String nom;
 	private String prenom;
 	private Date dateNaissance;
+//	@JsonManagedReference
 	@OneToMany (fetch=FetchType.EAGER, mappedBy="student",cascade = CascadeType.ALL)
 	private Collection<Book> books;
 	
