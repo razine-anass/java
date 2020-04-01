@@ -2,17 +2,16 @@ package org.sid.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.sid.dto.BookDTO;
 import org.sid.dto.Studentdto;
 import org.sid.entities.Book;
 import org.sid.entities.Student;
 import org.sid.services.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -43,9 +42,12 @@ public class StudentRestController {
 	@Autowired
     private ModelMapper modelMapper;
 	
+	private static final  Logger log = LoggerFactory.getLogger(StudentRestController.class);
+
+	
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	
-	@GetMapping("/students")
+	@GetMapping("/")
     @ResponseBody
     public List<Studentdto> getStudents() {
         
@@ -56,27 +58,12 @@ public class StudentRestController {
           .collect(Collectors.toList());
     }
 	
-//	@GetMapping("/students")
-//	public ResponseEntity<List<Student>> findAll(){
-//		
-//		HttpStatus status = null;
-//		
-//		ResponseEntity<List<Student>> response = null;
-//		
-//		List<Student>  students = studentService.findAll(); 
-//		
-//		if(students != null) {
-//			response = new ResponseEntity<List<Student>>(students, status.OK);
-//		} else {
-//			response = new ResponseEntity<List<Student>>(new ArrayList<Student>(), status.BAD_REQUEST);
-//		}
-//		
-//		return response;
-//	}
 	@RequestMapping("/get")
 	public ResponseEntity<Student> findByName(
 			@RequestParam("nomSt") String nom,
 			@RequestParam("prenomSt") String prenom){
+		
+		log.debug("GET received - serializing nom et prenom: " + nom + " " + prenom);
 		
 		ResponseEntity<Student> response = null;
 		HttpStatus status = null;
@@ -90,40 +77,32 @@ public class StudentRestController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<Student> createStudent(@RequestBody Studentdto studentdto) throws JsonProcessingException, ParseException{
+	public ResponseEntity<Student> createStudent(final @RequestBody Studentdto studentdto) throws JsonProcessingException, ParseException{
+		
+		log.debug("POST received - serializing Studentdto: " + studentdto.toString());
 		
 		ResponseEntity<Student> response = null;
 		HttpStatus status =  null;
 		
-		Student student = new Student();
-		student.setPrenom(studentdto.getNom());
-		student.setNom(studentdto.getPrenom());
-		student.setDateNaissance(dateFormat.parse(studentdto.getDateNaissance()));
-		Collection<BookDTO> l= studentdto.getBooks();
-		Collection<Book> books= new ArrayList<Book>();
-		student.setBooks(books);
-		for(BookDTO bookdto:l){
-			if(bookdto!=null) {
-				Book book =  new Book();
-				book.setNom(bookdto.getNom());
-				book.setStudent(student);
-				student.getBooks().add(book);
-			}
-		}
+		Student studentAuto = convertToEntity(studentdto);
+
+        for(Book b:studentAuto.getBooks()){
+        	b.setStudent(studentAuto);
+        }
 		
-		Student st = studentService.create(student);
+		Student st = studentService.create(studentAuto);
 		
 		if(st!=null){
-			response = new ResponseEntity<Student>(st,status.OK);
+			response = new ResponseEntity<Student>(st,status.CREATED);
 		} else {
-			response = new ResponseEntity<Student>(new Student(),status.BAD_REQUEST);
+			response = new ResponseEntity<Student>(new Student(),status.NOT_FOUND);
 		}
 		
 		return response;
 	}
 	
 	@GetMapping("/delete/{id}")
-	public ResponseEntity<String> deleteById(@PathVariable("id") Long id){
+	public ResponseEntity<String> deleteById(final @PathVariable("id") Long id){
 		
 		ResponseEntity<String> response =  null;
 		HttpStatus http = null;
@@ -131,8 +110,9 @@ public class StudentRestController {
 		Student student = studentService.findById(id);
 		if(student!=null) {
 			studentService.deleteById(id);
+			response = new ResponseEntity<String>("l'objet n'existe pas",http.NO_CONTENT);
 		} else {
-			response = new ResponseEntity<String>("l'objet n'existe pas",http.BAD_REQUEST);
+			response = new ResponseEntity<String>("l'objet n'existe pas",http.NOT_FOUND);
 		}
 		return response;
 //		try {
@@ -160,6 +140,14 @@ public class StudentRestController {
 		}
         return studenttDto;
     }
+	
+	private Student convertToEntity(Studentdto studentdto) throws ParseException {
+		
+		Student student = modelMapper.map(studentdto, Student.class);
+      
+        return student;
+    }
+
     
  
 //    @GetMapping
