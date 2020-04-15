@@ -31,6 +31,23 @@ public class Studentdto implements Serializable{
 		this.dateNaissance = dateNaissance;
 		this.books = books;
 	}
+	
+	
+
+	public Studentdto(Long id, String nom, String prenom) {
+		super();
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+	}
+
+	public Studentdto(Long id, String nom, String prenom, Collection<BookDTO> books) {
+		super();
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.books = books;
+	}
 
 	public Date getSubmissionDateConverted() throws ParseException {
         return dateFormat.parse(this.dateNaissance);
@@ -71,5 +88,12 @@ public class Studentdto implements Serializable{
 	public void setBooks(Collection<BookDTO> books) {
 		this.books = books;
 	}
+
+	@Override
+	public String toString() {
+		return "Studentdto [id=" + id + ", nom=" + nom + ", prenom=" + prenom + "]";
+	}
+	
+	
 	
 }

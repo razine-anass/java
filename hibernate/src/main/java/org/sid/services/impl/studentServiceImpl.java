@@ -23,6 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Razine Anass
  *
  */
+
+/**
+ * Avec Hibernate, lorsqu'une entité (attachée) est manipulée, toute modification qui lui est apportée est supposée être 
+ * reportée dans la base de données.
+
+Néanmoins, afin d'éviter des "update" permanents, Hibernate retarde le plus possible cette mise à jour en utilisant
+ la session comme cache. A certains moments, la session sera synchronisée avec la base de données (ce qu'on appelle le "flush").
+  Hibernate vérifiera si les entités attachées ont subi des modifications avant de lancer les updates (ce qu'on appelle 
+  le "dirty checking").
+ * @author Anass
+ *
+ */
+
 @Service
 @Transactional
 public class studentServiceImpl extends AbstractService<Student> implements StudentService{
@@ -40,7 +53,7 @@ public class studentServiceImpl extends AbstractService<Student> implements Stud
 		Student student = studentRepository.save(s);
 		return student;
 	}
-
+    // le readOnly désactive le dirty  Cheking
 	@Override
 	@Transactional(readOnly = true,isolation = Isolation.READ_UNCOMMITTED,timeout = 30)
 	public List<Student> getStudent(String nom) {
@@ -63,7 +76,7 @@ public class studentServiceImpl extends AbstractService<Student> implements Stud
 		
 		Student student = studentRepository.getOne(s.getId());
 		
-		student.setBooks(s.getBooks());
+//		student.setBooks(s.getBooks());
 		student.setDateNaissance(s.getDateNaissance());
 		student.setNom(s.getNom());
 		student.setPrenom(s.getPrenom());

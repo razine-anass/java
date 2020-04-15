@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.sid.dto.Studentdto;
 import org.sid.entities.Book;
 import org.sid.entities.Student;
+import org.sid.repository.StudentRepository;
 import org.sid.services.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,9 @@ public class StudentRestController {
 	
 	@Autowired
 	StudentService studentService;
+	
+	@Autowired
+	StudentRepository studentRepository;
 	
 	@Autowired
     private ModelMapper modelMapper;
@@ -148,6 +152,13 @@ public class StudentRestController {
         return student;
     }
 
+	@GetMapping("/test")
+	public ResponseEntity<Student> getTestStudent() {
+		
+		Student std = studentRepository.findById(1L).get();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(std);
+	}
     
  
 //    @GetMapping
