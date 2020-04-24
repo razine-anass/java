@@ -1,6 +1,7 @@
 package org.sid.entities;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +19,7 @@ public class Module {
 	private String nom;
 	
 	@ManyToMany 
-	private List<Etudiant> etudiants;
+	private Set<Etudiant> etudiants;
 	
 	
 
@@ -26,7 +27,7 @@ public class Module {
 		super();
 	}
 
-	public Module(Long id, String nom, List<Etudiant> etudiants) {
+	public Module(Long id, String nom, Set<Etudiant> etudiants) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -49,11 +50,11 @@ public class Module {
 		this.nom = nom;
 	}
 
-	public List<Etudiant> getEtudiants() {
+	public Set<Etudiant> getEtudiants() {
 		return etudiants;
 	}
 
-	public void setEtudiants(List<Etudiant> etudiants) {
+	public void setEtudiants(Set<Etudiant> etudiants) {
 		this.etudiants = etudiants;
 	}
 

@@ -1,7 +1,8 @@
 package org.sid.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -12,7 +13,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.Version;
 
 /**
@@ -58,9 +62,12 @@ public class Student implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@NotNull//hibernate verifie si id egal null, nullable c'est la base de donnee qui verfie si id egal nullet non hibernate
+	@Column(updatable=false,nullable=false)
 	private Long id;
 	
-	@Column(updatable=false)
+	@NaturalId
+    @Column(nullable = false, unique = true)
 	private String nom;
 	
 	@Column(updatable=false)
@@ -70,16 +77,23 @@ public class Student implements Serializable {
 	//(on gagne en performance) le dirty cheking qui permet à hibernate de savoir si une entité attachée a une session s'il a été modifier ou non
 	//  attention si on modifie dateNaissance la modification ne sera jamais ecrit sur la base de donnés 
     @Column(updatable=false)
-	private Date dateNaissance;
+	private LocalDateTime  dateNaissance;
     
 //	@JsonManagedReference
-	@OneToMany (mappedBy="student",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany (mappedBy="student",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	//il faut uiliser Set  pour eviter le problème MultipleBagFetchException
-	private Set<Book> books;
+	private Set<Book> books = new HashSet<Book>();
 	
 	//verouiller l'entité Student au moment de mise à jour
 	@Version
     private Integer version;
+	
+	@PreRemove
+	public void verifier(){
+		if(this.books.isEmpty()){
+			throw new RuntimeException("student à des books");
+		}
+	}
 	
 	public Student() {
 		super();
@@ -87,7 +101,7 @@ public class Student implements Serializable {
 	
 
 
-	public Student(Long id, String nom, String prenom, Date dateNaissance, Set<Book> books) {
+	public Student(Long id, String nom, String prenom, LocalDateTime  dateNaissance, Set<Book> books) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -116,10 +130,10 @@ public class Student implements Serializable {
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
 	}
-	public Date getDateNaissance() {
+	public LocalDateTime   getDateNaissance() {
 		return dateNaissance;
 	}
-	public void setDateNaissance(Date dateNaissance) {
+	public void setDateNaissance(LocalDateTime   dateNaissance) {
 		this.dateNaissance = dateNaissance;
 	}
 
