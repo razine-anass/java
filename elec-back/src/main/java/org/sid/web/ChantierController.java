@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.sid.entities.Chantier;
-import org.sid.repositories.ChantierRepository;
 import org.sid.services.ChantierService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +29,12 @@ public class ChantierController {
 	@Autowired
 	ChantierService chantierService;
 
+	
+//	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+//	@PreAuthorize("hasRole('ROLE_ADMIN')")
+//	@Secured({ "Role_ADMIN", "ADMIN" })
+	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/chantiers")
 	ResponseEntity<?> getChantiers() {
 
@@ -54,9 +60,12 @@ public class ChantierController {
 	}
 	
 	@GetMapping("/chantiers/pageable")
-	ResponseEntity<?> getChantierPageable(@RequestParam("page") int page,@RequestParam("size") int size){
-	    Chantier chantiers = (Chantier) chantierService.findPaginated(page, size);
-		return ResponseEntity.status(HttpStatus.OK).body(chantiers);
+	ResponseEntity<?> getChantierPageable(@RequestParam(name="page",defaultValue="0")int page,
+			                              @RequestParam(name="size",defaultValue="5")int size){
+		
+		Page<Chantier> chantiers = chantierService.findPaginated(page, size);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(chantiers.getContent());
 	}
 	
 	@PostMapping("/chantiers")
