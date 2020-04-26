@@ -30,11 +30,11 @@ public class ChantierController {
 	ChantierService chantierService;
 
 	
-//	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ADMIN')")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
 //	@Secured({ "Role_ADMIN", "ADMIN" })
 	
-	@PreAuthorize("hasAuthority('ADMIN')")
+//	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ADMIN')")
 	@GetMapping("/chantiers")
 	ResponseEntity<?> getChantiers() {
 

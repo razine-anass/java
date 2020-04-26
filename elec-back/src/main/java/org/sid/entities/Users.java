@@ -23,7 +23,7 @@ public class Users implements Serializable {
 	
 	private String password;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+	@OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
 	private Set<Role> roles = new HashSet<Role>();
 	
 	public Users() {
@@ -68,6 +68,11 @@ public class Users implements Serializable {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	@Override
+	public String toString() {
+		return "Users [id=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles + "]";
 	}
 	
 }

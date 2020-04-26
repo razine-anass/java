@@ -11,13 +11,13 @@ public class TestController {
 	
 	@GetMapping("/user")
 	public String test(){
-		return "success";
+		return "user";
 	}
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/user/admin")
 	public String teste(){
-		return "success";
+		return "admin";
 	}
 
 }

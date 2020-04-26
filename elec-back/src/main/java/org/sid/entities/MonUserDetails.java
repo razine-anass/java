@@ -16,42 +16,38 @@ public class MonUserDetails implements UserDetails {
 	
 	private Users user = new Users();
 	
-	private List<GrantedAuthority> authorities;
+//	private List<GrantedAuthority> authorities;
 	
 	public MonUserDetails() {
 		super();
 	}
 
-	public MonUserDetails(Users user) {
-		
-//		List<String> list = new ArrayList<String>();
-//		
-//		for(Role r :user.getRoles() ){
-//			list.add(r.getNom());
-//		}
-//		
-		
-        this.user.setUsername(user.getUsername()); 
-        this.user.setPassword(user.getPassword());
-        this.authorities = Arrays.stream(user.getRoles().iterator().next().getNom().split(","))
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-    }
-	
-	 @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
-	        return authorities;
-	    }
-	
-	
-
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		
-//		List<GrantedAuthority> users= user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+//	public MonUserDetails(Users user) {
+//
+//	   this.user.setId(user.getId());	
+//       this.user.setUsername(user.getUsername()); 
+//       this.user.setPassword(user.getPassword());
+//       this.user.setRoles(user.getRoles());
+//       this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getNom()))
 //				.collect(Collectors.toList());
-//		return users;
-//	}
+//    }
+	
+//	 @Override
+//	    public Collection<? extends GrantedAuthority> getAuthorities() {
+//	        return authorities;
+//	    }
+//	
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+//très important
+//pour utiliser les hasAnyRole      il faut rajouter "ROLE_" ----> new SimpleGrantedAuthority("ROLE_" + role.getNom())) ou l'enregister dans la base de données
+		                                    
+//pour utiliser les hasAnyAuthority il faut enlever  "ROLE_" ----> new SimpleGrantedAuthority(role.getNom()))
+		return user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getNom()))
+				.collect(Collectors.toList());
+
+	}
 
 
 	@Override
@@ -91,4 +87,11 @@ public class MonUserDetails implements UserDetails {
 	public void setUser(Users user) {
 		this.user = user;
 	}
+
+	@Override
+	public String toString() {
+		return "MonUserDetails [user=" + user + "]";
+	}
+
+	
 }

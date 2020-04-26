@@ -19,6 +19,10 @@ public class Role implements Serializable {
 	
 	private String nom;
 	
+	@JsonIgnore
+	@ManyToOne
+	private Users user;
+	
 	
 	public Role() {
 	}
@@ -35,5 +39,18 @@ public class Role implements Serializable {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+	
+	public Users getUser() {
+		return user;
+	}
 
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "Role [id=" + id + ", nom=" + nom + "]";
+	}
+	
 }

@@ -21,16 +21,16 @@ public class MonUserDetailsService implements UserDetailsService {
 	@SuppressWarnings("unused")
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Users> user = usersRepository.findByUsername(username);
-//		System.out.println(user.getRoles().iterator().next());
-//		MonUserDetails userDetails = null;
-//		if(user!=null){
-//		    userDetails = new MonUserDetails();
-//			userDetails.setUser(user);
-//		} else {
-//			throw new UsernameNotFoundException("cet utilisateur n'existe pas");
-//		}
-		return user.map(MonUserDetails::new).get();
+		Users user = usersRepository.findByUsername(username);
+		MonUserDetails userDetails = null;
+		if(user!=null){
+		    userDetails = new MonUserDetails();
+			userDetails.setUser(user);
+		} else {
+			throw new UsernameNotFoundException("cet utilisateur n'existe pas");
+		}
+		System.out.println(userDetails.getAuthorities());
+		return userDetails;
 	}
 
 }

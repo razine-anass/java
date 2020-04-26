@@ -32,7 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 
@@ -45,35 +45,34 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //on precise le type de la securité
 		auth.userDetailsService(monUserDetailsService).passwordEncoder(passwordEncoder());
-//		super.configure(auth);
 		
 //		auth.inMemoryAuthentication().withUser("anass").password("razine").roles("ADMIN");
 //		auth.inMemoryAuthentication().withUser("abass").password("kajma").roles("USER");
-//		
-//		super.configure(auth);
+		
 	}
 	
 	//gere l'autorisation
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-//		http.csrf().disable();
-//
-//		http.authorizeRequests().antMatchers("/test/**").permitAll().and()
-//				.authorizeRequests().antMatchers("/donnees/**").authenticated().anyRequest().hasAnyRole("ADMIN").and()
-//				.formLogin().permitAll();
-		
-
-		//formLogin() affiche le formulaire d'authentification
 		 http.csrf().disable();
 		 http
 		   .authorizeRequests()
-		         .antMatchers("/test/**").hasAnyAuthority("USER","ADMIN")
+		          //pour accerder à toutes url contenant /test/ il faut se connecter et etre ADMIN ou USER
+		         .antMatchers("/test/**").hasAnyRole("USER")
 		         .and()
 		   .authorizeRequests()
-	             .antMatchers("/donnees/**").hasAnyAuthority("ADMIN")
-	             .anyRequest().authenticated()
+		          //pour accerder à toutes url contenant /donnees/ il faut se connecter et etre ADMIN
+	             .antMatchers("/donnees/**").hasAnyRole("ADMIN")
 	             .and()
+	       .authorizeRequests()
+	              //toutes les urls contenant /acces/ ne requeirt pas d'authentification
+	              .antMatchers("/acces/**").permitAll()
+	              //pour accerder aux restes des url contenant il faut juste  se connecter
+	              // anyResuest doit etre toujout à la fin
+		          .anyRequest().authenticated()
+	              .and()
+	         //formLogin() affiche le formulaire d'authentification     
 	     	.formLogin()
 	     	    .permitAll();
 //		 hasAnyAuthority(("ADMIN"))
