@@ -1,9 +1,13 @@
 package org.sid.web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RestController
 public class SecurityController {
 	
 	
@@ -13,9 +17,9 @@ public class SecurityController {
 		return "redirect:/donnees/chantiers";
 	}
 	
-	@RequestMapping(value="/login")
+	@GetMapping(value="/login")
 	public String login(){
-		return "login";
+		return "Vous etes connectès";
 	}
 
 }

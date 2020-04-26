@@ -1,20 +1,20 @@
 package org.sid.config.security;
 
+import java.util.Arrays;
+
 import org.sid.services.MonUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  *  <li sec:authorize="hasRole('ROLE_ADMIN')">
@@ -54,7 +54,8 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	//gere l'autorisation
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
+	   	http.cors();
+	   	http.httpBasic();
 		 http.csrf().disable();
 		 http
 		   .authorizeRequests()
@@ -70,11 +71,20 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	              .antMatchers("/acces/**").permitAll()
 	              //pour accerder aux restes des url contenant il faut juste  se connecter
 	              // anyResuest doit etre toujout à la fin
-		          .anyRequest().authenticated()
-	              .and()
-	         //formLogin() affiche le formulaire d'authentification     
-	     	.formLogin()
-	     	    .permitAll();
+		          .anyRequest().authenticated();
+//	              .and()
+//	         //formLogin() affiche le formulaire d'authentification     
+//	     	.formLogin()
+//	     	    .permitAll();
+		
+		//----------------------------------------------------------------------
+//		http.cors();
+//		http.csrf().disable();
+//		  http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and
+//		 ().httpBasic(); 
+		//----------------------------------------------------------------------
+		
+		
 //		 hasAnyAuthority(("ADMIN"))
 		 
 //		    http.authorizeRequests().antMatchers("/donnees/**").authenticated().and().httpBasic().and().csrf().disable();
@@ -96,5 +106,16 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+//	@Bean
+//    CorsConfigurationSource corsConfigurationSource() 
+//    {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+//        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 	
 }
