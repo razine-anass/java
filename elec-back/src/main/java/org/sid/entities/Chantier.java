@@ -11,6 +11,9 @@ import javax.persistence.Id;
 @Entity
 public class Chantier implements Serializable  {
 	
+	private static final long serialVersionUID = 1L;
+	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -49,7 +52,5 @@ public class Chantier implements Serializable  {
 	public void setAdress(String adress) {
 		this.adress = adress;
 	}
-	
-	
 
 }

@@ -26,4 +26,5 @@ public class ChantierServiceImpl extends AbstractService<Chantier> implements Ch
     protected JpaRepository<Chantier, Long> getDao() {
         return chantierRepository;
     }
+
 }
