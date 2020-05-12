@@ -38,9 +38,14 @@ public class Photo  implements Serializable{
 		this.type = type;
 		this.picByte = picByte;
 	}
-
-
-
+	
+	public Photo(Long id, String nom, String type, byte[] picByte) {
+		super();
+		this.id = id;
+		this.nom = nom;
+		this.type = type;
+		this.picByte = picByte;
+	}
 
 	public Long getId() {
 		return id;

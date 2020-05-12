@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -28,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(path = "photo")
+@RequestMapping(path = "photos")
 public class PhotoController {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
@@ -39,6 +41,31 @@ public class PhotoController {
 	@Autowired
 	PhotosService photoService;
 	
+	@GetMapping(path = { "/photo" })
+	public ResponseEntity<?> getImages() throws IOException {
+		
+	    List<Photo> photos = photoService.findAll();
+	    List<Photo> photosDecomp = new ArrayList<Photo>();
+	    Photo photoDecompressée = null;
+	    for(Photo ph: photos){
+	    	photoDecompressée = new Photo(ph.getId(),ph.getNom(), ph.getType(),decompressBytes(ph.getPicByte()));
+	    	photosDecomp.add(photoDecompressée);
+	    }
+		
+	    return ResponseEntity.status(HttpStatus.OK).body(photosDecomp);
+	}
+	
+	@GetMapping(path = { "/{imageName}" })
+	public Photo getImageByNom(@PathVariable("imageName") String imageName) throws IOException {
+		
+		final Optional<Photo> retrievedImage = photoRepository.findByNom(imageName);
+		
+		Photo img = new Photo(retrievedImage.get().getId(),retrievedImage.get().getNom(), retrievedImage.get().getType(),
+				decompressBytes(retrievedImage.get().getPicByte()));
+		
+		return img;
+	}
+	
 	
 	@PostMapping("/upload")
 	public ResponseEntity<String> uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
@@ -48,22 +75,15 @@ public class PhotoController {
 		Photo img = new Photo(file.getOriginalFilename(), file.getContentType(),
 				compressBytes(file.getBytes()));
 		
-		photoRepository.save(img);
+		//photoRepository.save(img);
 		
 		return ResponseEntity.status(HttpStatus.OK).body("image creer");
 	}
 	
 	
-	@GetMapping(path = { "/{imageName}" })
-	public Photo getImage(@PathVariable("imageName") String imageName) throws IOException {
-		
-		final Optional<Photo> retrievedImage = photoRepository.findByNom(imageName);
-		
-		Photo img = new Photo(retrievedImage.get().getNom(), retrievedImage.get().getType(),
-				decompressBytes(retrievedImage.get().getPicByte()));
-		
-		return img;
-	}
+	//#################################################################################
+	//                             Enregistrement sur disque
+	//#################################################################################
 	
 	@ResponseBody
 	@PostMapping("/uploadImage")
