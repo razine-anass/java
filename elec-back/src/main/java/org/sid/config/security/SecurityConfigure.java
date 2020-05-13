@@ -61,27 +61,27 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		//pour permettre le cross origin
-	   	http.cors();
-	   	//definit le type d'authentification ici il s'agit d'une authentification de type Basic
-	   	http.httpBasic();
-		 http.csrf().disable();
-		 http
-		   .authorizeRequests()
-		          //pour accerder à toutes url contenant /test/ il faut se connecter et etre ADMIN ou USER
-		         .antMatchers("/test/**").hasAnyRole("USER")
-		         .and()
-		   .authorizeRequests()
-		          //pour accerder à toutes url contenant /donnees/ il faut se connecter et etre ADMIN
-	             .antMatchers("/donnees/**").hasAnyRole("ADMIN")
-	             .and()
-	       .authorizeRequests()
-	              //toutes les urls contenant /acces/ ne requeirt pas ni authentification ni roles
-	              .antMatchers("/donnees/photos").permitAll()
-	              .and()
-	       .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	              //pour accerder aux restes des url contenant il faut juste  se connecter
-	              // anyResuest doit etre toujout à la fin
-		          .anyRequest().authenticated();
+//	   	http.cors();
+//	   	//definit le type d'authentification ici il s'agit d'une authentification de type Basic
+//	   	http.httpBasic();
+//		 http.csrf().disable();
+//		 http
+//		   .authorizeRequests()
+//		          //pour accerder à toutes url contenant /test/ il faut se connecter et etre ADMIN ou USER
+//		         .antMatchers("/test/**").hasAnyRole("USER")
+//		         .and()
+//		   .authorizeRequests()
+//		          //pour accerder à toutes url contenant /donnees/ il faut se connecter et etre ADMIN
+//	             .antMatchers("/donnees/**").hasAnyRole("ADMIN")
+//	             .and()
+//	       .authorizeRequests()
+//	              //toutes les urls contenant /acces/ ne requeirt pas ni authentification ni roles
+//	              .antMatchers("/donnees/photos").permitAll()
+//	              .and()
+//	       .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**","/public/**").permitAll()
+//	              //pour accerder aux restes des url contenant il faut juste  se connecter
+//	              // anyResuest doit etre toujout à la fin
+//		          .anyRequest().authenticated();
 //	              .and()
 //	         //formLogin() affiche le formulaire d'authentification     
 //	     	.formLogin()
