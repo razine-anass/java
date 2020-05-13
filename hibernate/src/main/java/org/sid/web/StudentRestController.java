@@ -2,6 +2,8 @@ package org.sid.web;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,17 +67,23 @@ public class StudentRestController {
 	@RequestMapping("/get")
 	public ResponseEntity<Student> findByName(
 			@RequestParam("nomSt") String nom,
-			@RequestParam("prenomSt") String prenom){
+			@RequestParam("prenomSt") String prenom,
+			@RequestParam("id") Long id){
 		
-		log.debug("GET received - serializing nom et prenom: " + nom + " " + prenom);
+		log.info("GET received - serializing nom et prenom: " + nom + " " + prenom);
 		
 		ResponseEntity<Student> response = null;
 		HttpStatus status = null;
 		
 		Student st = new Student();
-		st.setNom(nom);st.setPrenom(prenom);
+		st.setId(id);
+		st.setNom(nom);
+		st.setPrenom(prenom);
+		LocalDateTime currentTime = LocalDateTime.of(2017, 02, 25, 15, 45); 
+		st.setDateNaissance(currentTime);
+		Student s = studentRepository.save(st);
 		
-		response = new ResponseEntity<Student>(st,status.OK);
+		response = new ResponseEntity<Student>(s,status.OK);
 		
 		return response;
 	}

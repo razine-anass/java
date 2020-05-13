@@ -170,9 +170,9 @@ public class HibernateApplication implements CommandLineRunner{
 		
 //		Set map = ((Map) lit.get(0)[0]).;
 	
-		System.out.println(map.size());
-		Call c = (Call)lit.get(0).getValue();
-		System.out.println(c);
+//		System.out.println(map.size());
+//		Call c = (Call)lit.get(0).getValue();
+//		System.out.println(c);
 //		for (Entry<Date, Call> entry: lit){
 //		   
 //			System.out.println(entry.entrySet()+" "+ entry.getValue().toString()); 

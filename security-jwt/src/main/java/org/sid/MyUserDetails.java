@@ -11,7 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class MyUserDetails implements UserDetails {
 
-    private String userName;
+	//une classe qui implement serializable doit posseder serialVersion qui aide à la déserialization 
+	// quand on veut desérialiser un objet serialisé on utilise serialVersionpour identifier l'objet surlequele on fait la serialization
+	private static final long serialVersionUID = 7695796165627998759L;
+	
+	private String userName;
     private String password;
     private boolean active;
     private List<GrantedAuthority> authorities;

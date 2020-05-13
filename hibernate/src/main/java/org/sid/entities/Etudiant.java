@@ -1,6 +1,7 @@
 package org.sid.entities;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,13 +20,13 @@ public class Etudiant {
 	private Long id;
 	private String nom;
 	@ManyToMany (mappedBy="etudiants")
-	private List<Module> modules;
+	private Set<Module> modules;
 	
 	public Etudiant() {
 		super();
 	}
 
-	public Etudiant(Long id, String nom, List<Module> modules) {
+	public Etudiant(Long id, String nom, Set<Module> modules) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -50,11 +51,11 @@ public class Etudiant {
 		this.nom = nom;
 	}
 
-	public List<Module> getModules() {
+	public Set<Module> getModules() {
 		return modules;
 	}
 
-	public void setModules(List<Module> modules) {
+	public void setModules(Set<Module> modules) {
 		this.modules = modules;
 	}
 
