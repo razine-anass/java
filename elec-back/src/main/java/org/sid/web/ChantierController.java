@@ -34,7 +34,7 @@ public class ChantierController {
 	ChantierService chantierService;
 
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ADMIN')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ADMIN')")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
 //	@Secured({ "Role_ADMIN", "ADMIN" })
 	

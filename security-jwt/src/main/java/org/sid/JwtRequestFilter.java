@@ -47,12 +47,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
              // on valide le jeton
             if (jwtUtil.validateToken(jwt, userDetails)) {
-                //on récupére l’objet “authentication” 
+                //on récupére les données du user dont le jwt est valide
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                //on ajouter l’objet “authentication” au contexte de spring-security
+                //on ajouter le user dont le jwt est valide au contexte de spring-security
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }

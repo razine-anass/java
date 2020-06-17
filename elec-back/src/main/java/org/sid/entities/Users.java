@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Users implements Serializable {
 	
@@ -21,6 +23,7 @@ public class Users implements Serializable {
 	
 	private String username;
 	
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	private String password;
 	
 	@OneToMany(mappedBy="user", fetch = FetchType.EAGER, cascade= CascadeType.ALL)

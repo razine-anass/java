@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 //permet de rafraichir les les attribus annoté avec @value
 @RefreshScope
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/api/public")
 public class Test2Controller {
        //variable d'envirenement
 		@Value("${xParam}")
