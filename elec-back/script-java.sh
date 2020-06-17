@@ -1,12 +1,12 @@
 #!/bin/sh
 SERVICE_NAME=SERVICE_NAME # service name 
-PATH_TO_JAR=/home/ec2-user/SERVICE-SNAPSHOT.jar # service jar file
+PATH_TO_JAR=./target/elec-back-0.0.1-SNAPSHOT.jar # service jar file
 PID_PATH_NAME=/tmp/SERVICE_NAME-pid # pid name 
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            nohup java -jar -Dspring.profiles.active=dev $PATH_TO_JAR /tmp 2>> /dev/null >> /dev/null & # -Dspring.profiles.active=dev
+            nohup java -jar  $PATH_TO_JAR /tmp 2>> /dev/null >> /dev/null & # -Dspring.profiles.active=dev
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
