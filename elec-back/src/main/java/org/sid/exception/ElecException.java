@@ -3,7 +3,20 @@ package org.sid.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class FileException {
+public class ElecException {
+	
+	public static class InvalidJwtException extends BaseException
+    {
+		private static final long serialVersionUID = -7922458048355109570L;
+
+		public InvalidJwtException(String msg) {
+            super(msg);
+        }
+        
+        public InvalidJwtException(String msg, Throwable cause) {
+            super(msg,cause);
+        }
+    }
 	
     public static class FileStorageException extends BaseException
     {

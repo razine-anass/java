@@ -1,21 +1,18 @@
 package org.sid.config.security;
 
-import java.util.Arrays;
-
 import org.sid.services.MonUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  *  <li sec:authorize="hasRole('ROLE_ADMIN')">
@@ -49,21 +46,20 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 	//gere l'authentification
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //on precise le type de la securité
+        //on passe notre userDetails ainsi que la methode d'encodage à spring securite afin qu'il verfie 
+		 // la validité du password du user qui tente de s'authentifier
 		auth.userDetailsService(monUserDetailsService).passwordEncoder(passwordEncoder());
-		
-//		auth.inMemoryAuthentication().withUser("anass").password("razine").roles("ADMIN");
-//		auth.inMemoryAuthentication().withUser("abass").password("kajma").roles("USER");
-		
 	}
 	
 	//gere l'autorisation
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+        //--------------------------Authentification Basic--------------------------
 		//pour permettre le cross origin
-//	   	http.cors();
+//	   	 http.cors();
 //	   	//definit le type d'authentification ici il s'agit d'une authentification de type Basic
-//	   	http.httpBasic();
+//	   	 http.httpBasic();
 //		 http.csrf().disable();
 //		 http
 //		   .authorizeRequests()
@@ -82,50 +78,46 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter{
 //	              //pour accerder aux restes des url contenant il faut juste  se connecter
 //	              // anyResuest doit etre toujout à la fin
 //		          .anyRequest().authenticated();
-//	              .and()
-//	         //formLogin() affiche le formulaire d'authentification     
-//	     	.formLogin()
-//	     	    .permitAll();
+       //----------------------------------------------------
+	  
+	   //----------------------------Authentification by Token------------------------
 		
-		//----------------------------------------------------------------------
-//		http.cors();
-//		http.csrf().disable();
-//		  http.authorizeRequests().antMatchers("/**").fullyAuthenticated().and
-//		 ().httpBasic(); 
-		//----------------------------------------------------------------------
+		// on désactive la création du token de spring security
+		http.cors();
 		
+		http.csrf().disable();
 		
-//		 hasAnyAuthority(("ADMIN"))
-		 
-//		    http.authorizeRequests().antMatchers("/donnees/**").authenticated().and().httpBasic().and().csrf().disable();
+		// on désactive la créatioin des session
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		http
+		 .authorizeRequests()
+		   .antMatchers("/api/admin**/**").hasAnyRole("ADMIN","USER")
+		   .and()
+		 .authorizeRequests()
+		   .antMatchers("api/user**/**").hasRole("USER")
+		   .and()
+		 .authorizeRequests()
+		   .antMatchers("/login","/signIn","/public**/**","/donnees**/**","/private**/**").permitAll()
+		 .anyRequest().authenticated();
+		
+		// après l'authentification ce filter qui verfie si les requete provenant du client ont le bon Jwt
+		http.addFilterBefore(new JwtAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);
+		
+		//puisque on utilise pas une authentification Basic (où springScurité receuper le username et le password 
+	                    	//à laide du header  Authorization: Basic bG9naW46cGFzcw== qui contient le username et le password)
+		//on utilise ce filter pour recuper par nous meme le username et le password
+		// et generer le Jwt
+		http.addFilter(new JwtAuthentificationFilter(authenticationManager()));
+		
+	   //----------------------------------------------------
 
-	   
-	    
-		 
-//		 http.csrf().disable().authorizeRequests()
-//        .antMatchers("donnees/**").hasAnyRole("ADMIN").anyRequest().fullyAuthenticated().and().formLogin();
-		 
-//		 http.csrf().disable().authorizeRequests()
-//		 .antMatchers("/donnees/**").hasAnyRole("ADMIN","USER")
-//         .antMatchers("/create/jeton","/login","static/css","static/js").permitAll()
-//         .and().formLogin();
-//        .defaultSuccessUrl("/welcome");
+	
 	}
 	
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
-//	@Bean
-//    CorsConfigurationSource corsConfigurationSource() 
-//    {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-//        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-	
+		
 }

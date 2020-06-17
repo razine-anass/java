@@ -20,6 +20,7 @@ public class MonUserDetailsService implements UserDetailsService {
 
 	@SuppressWarnings("unused")
 	@Override
+	//recuper by username les données relatives à l'utilisateur qui tente de s'authentifier
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Users user = usersRepository.findByUsername(username);
 		MonUserDetails userDetails = null;
@@ -30,6 +31,8 @@ public class MonUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("cet utilisateur n'existe pas");
 		}
 		System.out.println(userDetails.getAuthorities());
+		// on cree notre userDetails, spring security recuper ce dernier et comparere 
+		//        son passowrd avec celui du user qui tente de s'authentifier
 		return userDetails;
 	}
 
