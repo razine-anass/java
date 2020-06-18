@@ -7,6 +7,7 @@ import java.util.Set;
 import org.sid.entities.Chantier;
 import org.sid.entities.Facture;
 import org.sid.entities.Tache;
+import org.sid.enums.FactureStatut;
 import org.sid.repositories.FactureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -54,30 +55,32 @@ public class ElecBackApplication implements CommandLineRunner{
 	@Override
     public void run(String... args) throws Exception {
 		
-		
+		Facture facture = new Facture();
 		
 		Chantier chantier = new Chantier();
 		
-		Tache tache1 = new Tache("cable",1000,chantier);
-		Tache tache2 = new Tache("prise",80,chantier);
-		Tache tache3 = new Tache("lampe",30,chantier);
-		Tache tache4 = new Tache("installation chanffage",150,chantier);
+		Tache tache1 = new Tache("changement inter-phone",50,chantier);
+		//Tache tache2 = new Tache("installation climatiseur",500,chantier);
+		//Tache tache3 = new Tache("Interepteur",30,chantier);
+		//Tache tache4 = new Tache("installation Plaque",150,chantier);
 		
 		
 		Set<Tache> taches = new HashSet<>();
 		taches.add(tache1);
-		taches.add(tache2);
-		taches.add(tache3);
-		taches.add(tache4);
+		//taches.add(tache2);
+		//taches.add(tache3);
+		//taches.add(tache4);
 		
-		chantier.setAdress("25 rue de génie");
+		chantier.setAdress("03 Allée Édouard Troia");
 		chantier.setTache(taches);
 		
-		Facture facture = new Facture();
+		
 		facture.setChantier(chantier);
 		
 		LocalDate currentdate = LocalDate.now();
 		facture.setRef(currentdate+"");
+		facture.setDate(currentdate);
+		facture.setStatut(FactureStatut.NON_TRAITE);
     	
 		//factureRepository.save(facture);
 		

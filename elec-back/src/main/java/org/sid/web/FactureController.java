@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/donnee")
+@RequestMapping("/donnees")
 public class FactureController {
 	
 	Logger log = LoggerFactory.getLogger(this.getClass());
@@ -49,7 +49,7 @@ public class FactureController {
 		Facture f = new Facture();
 	
 	    try {
-			factureService.findById(id);
+			f = factureService.findById(id);
 		} catch (Exception e) {
 			log.error("problème lors du chargment de la facture",e);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("problème lors du chargment de la facture");
