@@ -51,9 +51,9 @@ public class AdminController {
 		
 		user.setPassword(pswd);
 		
-		Users us = userService.save(user);
+		//Users us = userService.save(user);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(us);
+		return ResponseEntity.status(HttpStatus.CREATED).body("");
 	}
 
 }

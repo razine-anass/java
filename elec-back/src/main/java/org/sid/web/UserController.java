@@ -76,13 +76,18 @@ public class UserController {
 	}
     
     @DeleteMapping("/utilisateur/{id}")
-    void deleteUser(@PathVariable Long id){
-    	Users u = userService.findById(id);
-    	userService.delete(u);
+    ResponseEntity<?> deleteUser(@PathVariable Long id){
+    	Users u;
+		try {
+			u = userService.findById(id);
+			userService.delete(u);
+		} catch (Exception e) {
+			log.error("problème lors du suppression d'un utilisateur",e);
+			ResponseEntity.status(HttpStatus.NOT_FOUND).body("problème lors du suppression d'un utilisateur");
+		}
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("problème lors du suppression d'un utilisateur");
     }
     
-    
-
 }
 @Data
 class UserForm{

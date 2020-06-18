@@ -1,5 +1,6 @@
 package org.sid.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -42,7 +43,13 @@ public class ChantierController {
 	@GetMapping("/chantiers")
 	ResponseEntity<?> getChantiers() {
 
-		List<Chantier> chantiers = chantierService.findAll();
+		List<Chantier> chantiers = new ArrayList<Chantier>();
+		try {
+			chantiers = chantierService.findAll();
+		} catch (Exception e) {
+			log.error("problème lors du chargment des chantiers",e);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("problème lors du chargment des chantiers");
+		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(chantiers);
 	}
@@ -51,10 +58,10 @@ public class ChantierController {
 	@GetMapping("/chantiers/{id}")
 	ResponseEntity<?> getChantierById(@PathVariable("id") Long id) {
 
-		Chantier chantier = null;
+		Chantier chantier;
 		try {
 			chantier = chantierService.findById(id);
-		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
 
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("donnee non trouvée");
 		}
@@ -75,20 +82,33 @@ public class ChantierController {
 	@PostMapping("/chantiers")
 	ResponseEntity<?> createChantier(@RequestBody Chantier chantier) {
 
-		Chantier cht = chantierService.save(chantier);
+		Chantier cht ;
+		try {
+			cht = chantierService.save(chantier);
+		} catch (Exception e) {
+           log.error("problème lors d'enregistrement du chantier",e);
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("problème lors d'enregistrement du chantier");
+		}
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(cht);
+		return ResponseEntity.status(HttpStatus.OK).body(cht);
 	}
 
 	
 	@PutMapping("/chantiers")
 	ResponseEntity<?> updateChantier(@RequestBody Chantier chantier) {
-		Chantier chant = chantierService.findById(chantier.getId());
-				
-		chant.setAdress(chantier.getAdress());
-		chant.setNom(chantier.getNom());
+		Chantier ch;
+		try {
+			Chantier chant = chantierService.findById(chantier.getId());
+					
+			chant.setAdress(chantier.getAdress());
+			chant.setNom(chantier.getNom());
 
-		Chantier ch = chantierService.update(chant);
+			ch = chantierService.update(chant);
+		} catch (Exception e) {
+		
+			log.error("problème lors de mise ajour du chantier",e);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("problème lors de mise ajour du chantier");
+		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(ch);
 	}
@@ -101,7 +121,7 @@ public class ChantierController {
         } catch(Exception e){
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("donnee non trouvée");
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(id);
+        return ResponseEntity.status(HttpStatus.OK).body(id);
 	}
 	
 

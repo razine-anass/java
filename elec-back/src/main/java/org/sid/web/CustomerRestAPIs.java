@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.sid.dto.FactureDto;
-import org.sid.services.FactureService;
+import org.sid.services.FactureServiceImpl;
 import org.sid.utils.PDFGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -22,7 +22,7 @@ public class CustomerRestAPIs {
 	
     
     @Autowired
-    FactureService factureService;
+    FactureServiceImpl factureService;
 
 //    @GetMapping(value = "/customers",
 //            produces = MediaType.APPLICATION_PDF_VALUE)

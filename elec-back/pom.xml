@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>org.sid</groupId>
 	<artifactId>elec-back</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>elec-back</name>
 	<description>elec-back Spring Boot</description>
 

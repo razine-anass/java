@@ -44,7 +44,12 @@ public class PhotoController {
 	@GetMapping(path = { "/photo" })
 	public ResponseEntity<?> getImages() throws IOException {
 		
-	    List<Photo> photos = photoService.findAll();
+	    List<Photo> photos=new ArrayList<Photo>();
+		try {
+			photos = photoService.findAll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	    List<Photo> photosDecomp = new ArrayList<Photo>();
 	    Photo photoDecompressée = null;
 	    for(Photo ph: photos){
